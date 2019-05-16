@@ -29,7 +29,7 @@ try:  # this is all we need to enable dialect support.
 except ImportError:
     dialects = None
 
-__version__ = '1.5.0'
+__version__ = '1.6.0'
 
 def module_from_spec(spec):
     """Compatibility wrapper.
@@ -83,11 +83,9 @@ def import_module_as_main(name, script_mode):
 #        pass
 
     if "" not in sys.path:  # Python 3.6 seems to have removed the special entry "" (the cwd) from sys.path
-        # Placing it first overrides installed pydialect with the local one when running tests
-        # (the installed one won't have the "test" submodules).
         sys.path.insert(0, "")
 
-    # path should be folder containing something.py if we are being run as "pydialect something.py" (script_mode=True), and cwd if run as "pydialect -m something"
+    # path should be folder containing something.py if we are being run as "macropy3 something.py" (script_mode=True), and cwd if run as "macropy3 -m something"
     path = None
     if '.' in absolute_name:
         parent_name, _, child_name = absolute_name.rpartition('.')
@@ -163,7 +161,7 @@ def import_module_as_main(name, script_mode):
 
 def main():
     """Handle command-line arguments and run the specified main program."""
-    parser = argparse.ArgumentParser(description="""Run a Python program with Pydialect and MacroPy3 enabled (if installed).""",
+    parser = argparse.ArgumentParser(description="""Run a Python program with MacroPy3 and/or enabled.""",
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
 
     parser.add_argument( '-v', '--version', action='version', version=('%(prog)s-bootstrapper ' + __version__) )
