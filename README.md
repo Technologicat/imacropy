@@ -32,7 +32,7 @@ To autoload it when IPython starts, add the string ``"imacropy.console"`` to the
 
 When the extension loads, it imports ``macropy`` into the REPL session. You can use this to debug whether it is loaded, if necessary.
 
-Currently **no startup banner is printed**, because extension loading occurs after IPython has already printed its own banner. We cannot manually print a banner, because some tools (notably ``importmagic.el`` for Emacs, included in Spacemacs) treat the situation as a fatal error in Python interpreter startup if anything is printed (and ``ipython3 --no-banner`` is rather convenient to have as the python-shell, to run IPython in Emacs's inferior-shell mode).
+Currently **no startup banner is printed**, because extension loading occurs after IPython has already printed its own banner. We cannot manually print a banner, because some tools (notably ``importmagic.el`` for Emacs, included in [Spacemacs](http://spacemacs.org/)) treat the situation as a fatal error in Python interpreter startup if anything is printed (and ``ipython3 --no-banner`` is rather convenient to have as the python-shell, to run IPython in Emacs's inferior-shell mode).
 
 
 ## Bootstrapper
@@ -59,13 +59,15 @@ Start it as:
 macropy3 some_program.py
 ```
 
-or:
+A relative path is ok, as long as it is under the current directory. Relative paths including ``..`` are **not** supported. We also support the ``-m module_name`` variant:
 
 ```bash
 macropy3 -m some_program
 ```
 
-The only command-line switch the bootstrapper supports is ``-m module_name``. If you need to set other Python command-line options:
+A dotted module path under the current directory is ok.
+
+If you need to set other Python command-line options:
 
 ```bash
 python3 <your options here> $(which macropy3) -m some_program
