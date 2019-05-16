@@ -175,11 +175,11 @@ except FileNotFoundError:
 #########################################################
 
 setup(
-    name = "pydialect",
+    name = "imacropy",
     version = version,
     author = "Juha Jeronen",
     author_email = "juha.m.jeronen@gmail.com",
-    url = "https://github.com/Technologicat/pydialect",
+    url = "https://github.com/Technologicat/imacropy",
 
     description = SHORTDESC,
     long_description = DESC,
