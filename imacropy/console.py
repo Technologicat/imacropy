@@ -78,7 +78,7 @@ class MacroTransformer(ast.NodeTransformer):
 
     def visit(self, tree):
         try:
-            bindings = detect_macros(tree, '__main__', reload=True)  # macro imports
+            bindings = detect_macros(tree, '__main__')  # macro imports
             if bindings:
                 self.ext.macro_bindings_changed = True
                 for fullname, macro_bindings in bindings:
