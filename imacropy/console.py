@@ -47,7 +47,7 @@ from collections import OrderedDict
 from macropy.core.macros import ModuleExpansionContext, detect_macros
 from macropy import __version__ as macropy_version
 
-from .util import reload_macro_modules
+from .util import _reload_macro_modules
 
 import macropy.activate  # noqa: F401, boot up MacroPy so ModuleExpansionContext works.
 
@@ -82,7 +82,7 @@ class MacroConsole(code.InteractiveConsole):
             tree = ast.parse(source)
             # Must reload modules before detect_macros, because detect_macros reads the macro registry
             # of each module from which macros are imported.
-            reload_macro_modules(tree, '__main__')
+            _reload_macro_modules(tree, '__main__')
             # If detect_macros returns normally, it means each fullname can be imported successfully.
             bindings = detect_macros(tree, '__main__')
             if bindings:

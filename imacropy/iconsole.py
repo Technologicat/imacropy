@@ -49,7 +49,7 @@ from IPython.core.magic import register_cell_magic
 from macropy import __version__ as macropy_version
 from macropy.core.macros import ModuleExpansionContext, detect_macros
 
-from .util import reload_macro_modules
+from .util import _reload_macro_modules
 
 _placeholder = "<interactive input>"
 _instance = None
@@ -80,7 +80,7 @@ class MacroTransformer(ast.NodeTransformer):
 
     def visit(self, tree):
         try:
-            reload_macro_modules(tree, '__main__')
+            _reload_macro_modules(tree, '__main__')
             bindings = detect_macros(tree, '__main__')  # macro imports
             if bindings:
                 self.ext.macro_bindings_changed = True
