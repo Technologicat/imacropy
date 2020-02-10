@@ -1,9 +1,10 @@
 # -*- coding: utf-8; -*-
 
-__all__ = ["reload_macro_modules"]
+__all__ = ["reload_macro_modules", "doc"]
 
 import ast
 import importlib
+import textwrap
 
 # Modeled after macropy.core.macros.detect_macros.
 # This is a separate function with duplicate logic, so we don't need to modify MacroPy.
@@ -30,3 +31,23 @@ def reload_macro_modules(tree, from_fullname, from_package=None, from_module=Non
             mod = importlib.reload(mod)
         except ModuleNotFoundError:
             pass
+
+def doc(obj):
+    """Print an object's docstring, non-interactively.
+
+    This works around the problem that in a REPL session using
+    `imacropy.console` or `imacropy.iconsole`, the builtin `help()`
+    fails to see the macro docstring, and sees only the docstring
+    of `WrappedMacro`.
+    """
+    if not hasattr(obj, "__doc__") or not obj.__doc__:
+        print("<no docstring>")
+        return
+    # Emulate help()'s dedenting. Typically, the first line in a docstring
+    # has no leading whitespace, while the rest follow the indentation of
+    # the function body.
+    firstline, *rest = obj.__doc__.split("\n")
+    rest = textwrap.dedent("\n".join(rest))
+    doc = [firstline, *rest.split("\n")]
+    for line in doc:
+        print(line)
