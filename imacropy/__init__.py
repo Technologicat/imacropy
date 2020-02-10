@@ -6,4 +6,4 @@ and the script ``macropy3`` for the generic bootstrapper (to allow your main
 program to use macros).
 """
 
-__version__ = '0.1.1'
+__version__ = '0.2.0'
