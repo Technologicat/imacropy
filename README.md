@@ -4,6 +4,8 @@ Imacropy is interactive macropy.
 
 We provide some agile-development addons for MacroPy, namely an IPython extension to macro-enable its REPL, and a generic macro-enabling bootstrapper.
 
+*New in v0.2.0.* We also provide a macro-enabled equivalent of `code.InteractiveConsole`, with the same semantics regarding macros as in the IPython extension. The IPython extension has been renamed to `imacropy.iconsole` (note the second `i`).
+
 
 ## IPython extension
 
@@ -26,9 +28,9 @@ Macro docstrings and source code can be viewed using ``?`` and ``??``, as usual.
 
 ### Loading the extension
 
-To load the extension once, ``%load_ext imacropy.console``.
+To load the extension once, ``%load_ext imacropy.iconsole``.
 
-To autoload it when IPython starts, add the string ``"imacropy.console"`` to the list ``c.InteractiveShellApp.extensions`` in your ``ipython_config.py``. To find the config file, ``ipython profile locate``.
+To autoload it when IPython starts, add the string ``"imacropy.iconsole"`` to the list ``c.InteractiveShellApp.extensions`` in your ``ipython_config.py``. To find the config file, ``ipython profile locate``.
 
 When the extension loads, it imports ``macropy`` into the REPL session. You can use this to debug whether it is loaded, if necessary.
 
