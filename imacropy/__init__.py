@@ -3,8 +3,8 @@
 
 - ``imacropy.iconsole``, IPython extension. Use macros in the IPython REPL.
 
-- ``imacropy.console``, a macro-enabled equivalent of ``code.InteractiveConsole``.
-  Use macros in an embedded REPL.
+- ``imacropy.console.MacroConsole``, a macro-enabled equivalent of ``code.InteractiveConsole``.
+  Embed a REPL that supports macros.
 
 - ``macropy3``, a generic bootstrapper for macro-enabled Python programs.
   Use macros in your main program.

@@ -2,9 +2,15 @@
 
 Imacropy is interactive macropy.
 
-We provide some agile-development addons for MacroPy, namely an IPython extension to macro-enable its REPL, and a generic macro-enabling bootstrapper.
+We provide some agile-development addons for MacroPy, namely:
 
-*New in v0.2.0.* We also provide a macro-enabled equivalent of `code.InteractiveConsole`, with the same semantics regarding macros as in the IPython extension. The IPython extension has been renamed to `imacropy.iconsole` (note the second `i`).
+- ``imacropy.iconsole``, IPython extension. **Use macros in the IPython REPL**.
+
+- ``imacropy.console.MacroConsole``, a macro-enabled equivalent of ``code.InteractiveConsole``. **Use macros in an embedded REPL**.
+
+- ``macropy3``, a generic bootstrapper for macro-enabled Python programs. **Use macros in your main program**.
+
+*Changed in v0.2.0.* Due to the addition of `MacroConsole`, which is more deserving of the module name `imacropy.console`, the IPython extension has been renamed to `imacropy.iconsole` (note the second `i`). Please update your IPython profile. This is a permanent rename, `iconsole` will not be renamed again.
 
 
 ## IPython extension
@@ -37,9 +43,39 @@ When the extension loads, it imports ``macropy`` into the REPL session. You can 
 Currently **no startup banner is printed**, because extension loading occurs after IPython has already printed its own banner. We cannot manually print a banner, because some tools (notably ``importmagic.el`` for Emacs, included in [Spacemacs](http://spacemacs.org/)) treat the situation as a fatal error in Python interpreter startup if anything is printed (and ``ipython3 --no-banner`` is rather convenient to have as the python-shell, to run IPython in Emacs's inferior-shell mode).
 
 
+## MacroConsole
+
+This allows you to **embed a REPL that supports macros**. The difference to `macropy.core.console.MacroConsole` is that this one offers the same semantics as the IPython extension.
+
+```python
+from imacropy.console import MacroConsole
+m = MacroConsole()
+m.interact()
+```
+
+Now we're inside a macro-enabled REPL:
+
+```python
+from unpythonic.syntax import macros, let
+x = let[((a, 21)) in 2 * a]
+assert x == 42
+```
+
+Just like in `code.InteractiveConsole`, exiting the REPL (Ctrl+D) returns from the `interact()` call.
+
+Macro docstrings can be viewed with `imacropy.doc(some_macro)`:
+
+```python
+from imacropy import doc
+doc(let)
+```
+
+The `doc` function is provided because for some reason, both in `MacroConsole` and in the IPython extension, `help(some_macro)` sees only the generic docstring of `WrappedMacro`, not that of the actual macro stub object. `imacropy.doc` has no paging, but `doc(some_macro)` sees the correct docstring, just like IPython's `some_macro?` does.
+
+
 ## Bootstrapper
 
-The bootstrapper imports the specified file or module, pretending its ``__name__`` is ``"__main__"``. This allows your main program to use macros.
+The bootstrapper imports the specified file or module, pretending its ``__name__`` is ``"__main__"``. **This allows your main program to use macros**.
 
 For example, ``some_program.py``:
 
