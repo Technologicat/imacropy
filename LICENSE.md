@@ -1,4 +1,4 @@
-Copyright (c) 2019, Juha Jeronen and University of Jyväskylä.
+Copyright (c) 2019-2020, Juha Jeronen and University of Jyväskylä.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

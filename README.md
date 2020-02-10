@@ -118,4 +118,4 @@ sudo python setup.py install
 
 ## License
 
-[BSD](LICENSE.md). Copyright 2019 Juha Jeronen and University of Jyväskylä.
+[BSD](LICENSE.md). Copyright 2019-2020 Juha Jeronen and University of Jyväskylä.
