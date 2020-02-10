@@ -3,11 +3,11 @@
 
 To enable::
 
-    %load_ext imacropy.console
+    %load_ext imacropy.iconsole
 
 To autoload it at IPython startup, put this into your ``ipython_config.py``::
 
-    c.InteractiveShellApp.extensions = ["imacropy.console"]
+    c.InteractiveShellApp.extensions = ["imacropy.iconsole"]
 
 To find your config file, ``ipython profile locate``.
 
