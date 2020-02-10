@@ -25,8 +25,8 @@ This differs from `macropy.core.console.MacroConsole` in that we follow
     and to allow viewing macro docstrings (`some_macro.__doc__`).
 
     Note `help(some_macro)` still won't work; it'll show the docstring for
-    the `WrappedMacro` wrapper only. As a workaround, use `imacropy.util.doc(some_macro)`.
-    (No paging, but it grabs the correct docstring.)
+    the `WrappedMacro` wrapper only. As a workaround, use `imacropy.doc(some_macro)`.
+    (No paging, but it sees the correct docstring.)
 
     This does not affect using the macros in the intended way, as macros,
     since macros are expanded away before run-time.

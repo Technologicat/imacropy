@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 """Imacropy is interactive macropy, a set of agile tools for MacroPy.
 
-See ``imacropy.console`` for the IPython extension (for a macro-enabled REPL),
-and the script ``macropy3`` for the generic bootstrapper (to allow your main
-program to use macros).
+- ``imacropy.iconsole``, IPython extension. Use macros in the IPython REPL.
+
+- ``imacropy.console``, a macro-enabled equivalent of ``code.InteractiveConsole``.
+  Use macros in an embedded REPL.
+
+- ``macropy3``, a generic bootstrapper for macro-enabled Python programs.
+  Use macros in your main program.
 """
 
 __version__ = '0.2.0'
+
+# export
+from .util import doc
