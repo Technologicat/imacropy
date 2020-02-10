@@ -96,14 +96,14 @@ class MacroTransformer(ast.NodeTransformer):
 def ignore_importerror(line, cell):  # ...when their stubs are loaded
     try:
         exec(cell, _instance.shell.user_ns)  # set globals to the shell user namespace to respect assignments
-    except ImportError as e:
+    except ImportError:
         pass
 
 @register_cell_magic
 def ignore_nameerror(line, cell):  # ...when they are unloaded
     try:
         exec(cell, _instance.shell.user_ns)
-    except NameError as e:
+    except NameError:
         pass
 
 class IMacroPyExtension:
