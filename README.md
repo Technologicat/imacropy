@@ -4,11 +4,11 @@ Imacropy is interactive macropy.
 
 We provide some agile-development addons for MacroPy, namely:
 
-- ``imacropy.iconsole``, IPython extension. **Use macros in the IPython REPL**.
+- [``imacropy.iconsole``](#ipython-extension), IPython extension. **Use macros in the IPython REPL**.
 
-- ``imacropy.console.MacroConsole``, a macro-enabled equivalent of ``code.InteractiveConsole``. **Embed a REPL that supports macros**.
+- [``imacropy.console.MacroConsole``](#macroconsole), a macro-enabled equivalent of ``code.InteractiveConsole``. **Embed a REPL that supports macros**.
 
-- ``macropy3``, a generic bootstrapper for macro-enabled Python programs. **Use macros in your main program**.
+- [``macropy3``](#bootstrapper), a generic bootstrapper for macro-enabled Python programs. **Use macros in your main program**.
 
 *Changed in v0.2.0.* Due to the addition of `MacroConsole`, which is more deserving of the module name `imacropy.console`, the IPython extension has been renamed to `imacropy.iconsole` (note the second `i`). Please update your IPython profile. This is a permanent rename, `iconsole` will not be renamed again.
 
