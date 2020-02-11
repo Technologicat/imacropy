@@ -10,7 +10,7 @@
   Use macros in your main program.
 """
 
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 
 # export
 from .util import *
