@@ -6,6 +6,8 @@ import ast
 import importlib
 import inspect
 
+from macropy.core.macros import WrappedFunction
+
 def doc(obj):
     """Print an object's docstring, non-interactively.
 
@@ -25,6 +27,8 @@ def doc(obj):
         print("<no docstring>")
         return
     try:
+        if isinstance(obj, WrappedFunction):
+            obj = obj.__wrapped__  # this is needed to make inspect.getsourcefile work with macros
         filename = inspect.getsourcefile(obj)
         source, firstlineno = inspect.getsourcelines(obj)
         print(f"{filename}:{firstlineno}")
@@ -40,6 +44,8 @@ def sourcecode(obj):
     This is printed before the actual source code.
     """
     try:
+        if isinstance(obj, WrappedFunction):
+            obj = obj.__wrapped__  # this is needed to make inspect.getsourcefile work with macros
         filename = inspect.getsourcefile(obj)
         source, firstlineno = inspect.getsourcelines(obj)
         print(f"{filename}:{firstlineno}")
