@@ -182,7 +182,7 @@ class MacroConsole(code.InteractiveConsole):
             except NameError:
                 pass
             """
-            self.internal_execute(source)
+            self._internal_execute(source)
         self._stubs = set()
 
         for fullname, (_, macro_bindings) in self._bindings.items():
@@ -195,4 +195,4 @@ class MacroConsole(code.InteractiveConsole):
             except ImportError:
                 pass
             """
-            self.internal_execute(source)
+            self._internal_execute(source)
