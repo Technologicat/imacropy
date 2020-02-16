@@ -11,7 +11,7 @@
   Use macros in your main program.
 """
 
-__version__ = '0.2.2'
+__version__ = '0.2.3'
 
 # export
 from .util import *
