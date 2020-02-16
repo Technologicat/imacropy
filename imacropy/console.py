@@ -4,6 +4,13 @@
 This differs from `macropy.core.console.MacroConsole` in that we follow
 `imacropy` REPL semantics:
 
+  - Similarly to IPython, you can use ``obj?`` to view obj's docstring,
+    and ``obj??`` to view its source code.
+
+    `imacropy` defines two utility functions for this: `doc`, `sourcecode`.
+    ``obj?`` is shorthand for ``doc(obj)``, and ``obj??`` is shorthand
+    for ``sourcecode(obj)``.
+
   - Each time a ``from mymodule import macros, ...`` is executed in the REPL,
     the system reloads ``mymodule``, to use the latest macro definitions.
 
@@ -22,18 +29,18 @@ This differs from `macropy.core.console.MacroConsole` in that we follow
 
     Stubs are not directly usable. The intention is to let Python recognize
     the macro name (otherwise there would be no run-time object by that name),
-    and to allow viewing macro docstrings (`some_macro.__doc__`).
+    and to allow viewing macro docstrings.
 
-    Note `help(some_macro)` still won't work; it'll show the docstring for
-    the `WrappedMacro` wrapper only. As a workaround, use `imacropy.doc(some_macro)`.
+    Note `help(some_macro)` won't work; it'll show the docstring for the
+    `WrappedMacro` wrapper only. Use `some_macro?`, like you would in IPython.
     (No paging, but it sees the correct docstring.)
 
     This does not affect using the macros in the intended way, as macros,
     since macros are expanded away before run-time.
 
-Based on macropy.core.MacroConsole by Li Haoyi, Justin Holmgren, Alberto Berti and all the other contributors,
-2013-2019. Used under the MIT license.
-    https://github.com/azazel75/macropy
+Based on macropy.core.MacroConsole by Li Haoyi, Justin Holmgren, Alberto Berti
+and all the other contributors, 2013-2019. Used under the MIT license.
+https://github.com/azazel75/macropy
 """
 
 __all__ = ["MacroConsole"]
@@ -53,11 +60,51 @@ import macropy.activate  # noqa: F401, boot up MacroPy so ModuleExpansionContext
 
 
 class MacroConsole(code.InteractiveConsole):
-    def __init__(self, locals=None, filename="<console>"):
+    def __init__(self, locals=None, filename="<console>", help_function="doc"):
+        """help_function: str. The function invoked with the ? syntax.
+                          E.g. `dir?` --> `doc(dir)`. Valid values are
+                          "help", "doc" (see `imacropy.doc`).
+
+                          The difference is `doc` is non-interactive.
+                          This is useful in a remote REPL session
+                          (see `unpythonic.net.client`).
+
+        Other parameters like in `code.InteractiveConsole`.
+        """
         super().__init__(locals, filename)
+
+        # macro support
         self._bindings = OrderedDict()
         self._stubs = set()
         self._stubs_dirty = False
+
+        # ? and ?? help syntax
+        self.help_function = help_function
+        if help_function == "doc":
+            self._internal_execute("from imacropy import doc")
+        elif help_function == "help":
+            pass
+        else:
+            raise ValueError(f"Unknown help function '{help_function}'; valid values: 'help', 'doc'.")
+        self._internal_execute("from imacropy import sourcecode")  # for obj??
+
+    def _internal_execute(self, source):
+        """Execute given source in the console session.
+
+        This is support magic for internal operation of the console
+        session itself, e.g. for auto-loading macro stubs.
+
+        The source must be pure Python, i.e. no macros.
+
+        The source is NOT added to the session history.
+
+        This bypasses `runsource`, so it too can use this function.
+        """
+        source = textwrap.dedent(source)
+        tree = ast.parse(source)
+        tree = ast.Interactive(tree.body)
+        code = compile(tree, "<console_internal>", "single", self.compile.compiler.flags, 1)
+        self.runcode(code)
 
     def interact(self, banner=None, exitmsg=None):
         """See `code.InteractiveConsole.interact`.
@@ -67,10 +114,17 @@ class MacroConsole(code.InteractiveConsole):
         containing the MacroPy version before that default banner.
         """
         if banner is None:
+            self.write("Use obj? to view obj's docstring, and obj?? to view its source code.\n")
             self.write(f"MacroPy {macropy_version} -- Syntactic macros for Python.\n")
         return super().interact(banner, exitmsg)
 
     def runsource(self, source, filename="<input>", symbol="single"):
+        # ? and ?? help syntax
+        if source.endswith("??"):
+            return self.runsource(f'sourcecode({source[:-2]})')
+        elif source.endswith("?"):
+            return self.runsource(f"{self.help_function}({source[:-1]})")
+
         try:
             code = self.compile(source, filename, symbol)
         except (OverflowError, SyntaxError, ValueError):
@@ -119,14 +173,6 @@ class MacroConsole(code.InteractiveConsole):
             return
         self._stubs_dirty = False
 
-        # We bypass runsource, since it calls us, and we don't need macros in what we do here.
-        def internal_execute(source):
-            source = textwrap.dedent(source)
-            tree = ast.parse(source)
-            tree = ast.Interactive(tree.body)
-            code = compile(tree, "<console_internal>", "single", self.compile.compiler.flags, 1)
-            self.runcode(code)
-
         # Clear previous stubs, because we override the available set of macros
         # from a given module with those most recently imported from that module.
         for asname in self._stubs:
@@ -136,7 +182,7 @@ class MacroConsole(code.InteractiveConsole):
             except NameError:
                 pass
             """
-            internal_execute(source)
+            self.internal_execute(source)
         self._stubs = set()
 
         for fullname, (_, macro_bindings) in self._bindings.items():
@@ -149,4 +195,4 @@ class MacroConsole(code.InteractiveConsole):
             except ImportError:
                 pass
             """
-            internal_execute(source)
+            self.internal_execute(source)

@@ -1,13 +1,17 @@
 # -*- coding: utf-8; -*-
 
-__all__ = ["doc"]
+__all__ = ["doc", "sourcecode"]
 
 import ast
 import importlib
-import textwrap
+import inspect
 
 def doc(obj):
     """Print an object's docstring, non-interactively.
+
+    Additionally, if the information is available, print the filename
+    and the starting line number of the definition of `obj` in that file.
+    This is printed before the actual docstring.
 
     This works around the problem that in a REPL session using
     `imacropy.console` or `imacropy.iconsole`, the builtin `help()`
@@ -20,14 +24,29 @@ def doc(obj):
     if not hasattr(obj, "__doc__") or not obj.__doc__:
         print("<no docstring>")
         return
-    # Emulate help()'s dedenting. Typically, the first line in a docstring
-    # has no leading whitespace, while the rest follow the indentation of
-    # the function body.
-    firstline, *rest = obj.__doc__.split("\n")
-    rest = textwrap.dedent("\n".join(rest))
-    doc = [firstline, *rest.split("\n")]
-    for line in doc:
-        print(line)
+    try:
+        filename = inspect.getsourcefile(obj)
+        source, firstlineno = inspect.getsourcelines(obj)
+        print(f"{filename}:{firstlineno}")
+    except (TypeError, OSError):
+        pass
+    print(inspect.cleandoc(obj.__doc__))
+
+def sourcecode(obj):
+    """Print an object's source code, non-interactively.
+
+    Additionally, if the information is available, print the filename
+    and the starting line number of the definition of `obj` in that file.
+    This is printed before the actual source code.
+    """
+    try:
+        filename = inspect.getsourcefile(obj)
+        source, firstlineno = inspect.getsourcelines(obj)
+        print(f"{filename}:{firstlineno}")
+        for line in source:
+            print(line.rstrip("\n"))
+    except (TypeError, OSError):
+        print("<no source code available>")
 
 # Modeled after macropy.core.macros.detect_macros.
 # This is a separate function with duplicate logic, so we don't need to modify MacroPy.

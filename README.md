@@ -45,7 +45,7 @@ Currently **no startup banner is printed**, because extension loading occurs aft
 
 ## MacroConsole
 
-This allows you to **embed a REPL that supports macros**. The difference to `macropy.core.console.MacroConsole` is that this one offers the same semantics as the IPython extension.
+This is a derivative of ``code.InteractiveConsole``, allowing you to **embed a REPL that supports macros**. The difference to `macropy.core.console.MacroConsole` is that this one offers the same semantics as the IPython extension. We also offer the ``?`` and ``??`` syntax to view docstrings and source code.
 
 ```python
 from imacropy.console import MacroConsole
@@ -63,14 +63,18 @@ assert x == 42
 
 Just like in `code.InteractiveConsole`, exiting the REPL (Ctrl+D) returns from the `interact()` call.
 
-Macro docstrings can be viewed with `imacropy.doc(some_macro)`:
+Macro docstrings and source code can be viewed like in IPython:
 
 ```python
-from imacropy import doc
-doc(let)
+let?
+let??
 ```
 
-The `doc` function is provided because for some reason, both in `MacroConsole` and in the IPython extension, `help(some_macro)` sees only the generic docstring of `WrappedMacro`, not that of the actual macro stub object. `imacropy.doc` has no paging, but `doc(some_macro)` sees the correct docstring, just like IPython's `some_macro?` does.
+If the information is available, these operations also print the filename and the starting line number of the definition of the queried object in that file.
+
+The ``obj?`` syntax is shorthand for ``imacropy.doc(obj)``, and ``obj??`` is shorthand for ``imacropy.sourcecode(obj)``.
+
+Note that just like in IPython, for some reason `help(some_macro)` sees only the generic docstring of `WrappedMacro`, not that of the actual macro stub object. So use the ``?`` syntax to view macro docstrings, as you would in IPython.
 
 
 ## Bootstrapper
