@@ -60,17 +60,8 @@ import macropy.activate  # noqa: F401, boot up MacroPy so ModuleExpansionContext
 
 
 class MacroConsole(code.InteractiveConsole):
-    def __init__(self, locals=None, filename="<console>", help_function="doc"):
-        """help_function: str. The function invoked with the ? syntax.
-                          E.g. `dir?` --> `doc(dir)`. Valid values are
-                          "help", "doc" (see `imacropy.doc`).
-
-                          The difference is `doc` is non-interactive.
-                          This is useful in a remote REPL session
-                          (see `unpythonic.net.client`).
-
-        Other parameters like in `code.InteractiveConsole`.
-        """
+    def __init__(self, locals=None, filename="<console>"):
+        """Parameters like in `code.InteractiveConsole`."""
         super().__init__(locals, filename)
 
         # macro support
@@ -79,14 +70,7 @@ class MacroConsole(code.InteractiveConsole):
         self._stubs_dirty = False
 
         # ? and ?? help syntax
-        self.help_function = help_function
-        if help_function == "doc":
-            self._internal_execute("from imacropy import doc")
-        elif help_function == "help":
-            pass
-        else:
-            raise ValueError(f"Unknown help function '{help_function}'; valid values: 'help', 'doc'.")
-        self._internal_execute("from imacropy import sourcecode")  # for obj??
+        self._internal_execute("import imacropy")
 
     def _internal_execute(self, source):
         """Execute given source in the console session.
@@ -121,9 +105,9 @@ class MacroConsole(code.InteractiveConsole):
     def runsource(self, source, filename="<input>", symbol="single"):
         # ? and ?? help syntax
         if source.endswith("??"):
-            return self.runsource(f'sourcecode({source[:-2]})')
+            return self.runsource(f'imacropy.sourcecode({source[:-2]})')
         elif source.endswith("?"):
-            return self.runsource(f"{self.help_function}({source[:-1]})")
+            return self.runsource(f"imacropy.doc({source[:-1]})")
 
         try:
             code = self.compile(source, filename, symbol)
