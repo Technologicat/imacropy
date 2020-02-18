@@ -84,6 +84,13 @@ class MacroTransformer(ast.NodeTransformer):
             bindings = detect_macros(tree, '__main__')  # macro imports
             if bindings:
                 self.ext.macro_bindings_changed = True
+                for fullname, macro_bindings in bindings:  # validate before committing
+                    mod = importlib.import_module(fullname)  # already imported so just a sys.modules lookup
+                    for origname, _ in macro_bindings:
+                        try:
+                            getattr(mod, origname)
+                        except AttributeError:
+                            raise ImportError(f"cannot import name '{origname}'")
                 for fullname, macro_bindings in bindings:
                     mod = importlib.import_module(fullname)
                     self.bindings[fullname] = (mod, macro_bindings)
