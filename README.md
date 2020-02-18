@@ -76,6 +76,8 @@ The ``obj?`` syntax is shorthand for ``imacropy.doc(obj)``, and ``obj??`` is sho
 
 Note that just like in IPython, for some reason `help(some_macro)` sees only the generic docstring of `WrappedMacro`, not that of the actual macro stub object. So use the ``?`` syntax to view macro docstrings, as you would in IPython.
 
+*Added in v0.3.1.* The literal command `macros?` now prints a human-readable list of macros that are currently imported into the REPL session (or says that no macros are imported, if so). This shadows the `obj?` docstring lookup syntax for the MacroPy special object `macros`, but that's likely not needed. That can still be invoked manually, using `imacropy.doc(macros)`.
+
 
 ## Bootstrapper
 
