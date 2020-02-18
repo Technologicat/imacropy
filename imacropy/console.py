@@ -90,6 +90,19 @@ class MacroConsole(code.InteractiveConsole):
         code = compile(tree, "<console_internal>", "single", self.compile.compiler.flags, 1)
         self.runcode(code)
 
+    def _list_macros(self):
+        """Print a human-readable list of macros currently imported into the session."""
+        if not self._bindings:
+            self.write("<no macros imported>\n")
+            return
+        themacros = []
+        for fullname, (_, macro_bindings) in self._bindings.items():
+            for _, asname in macro_bindings:
+                themacros.append((asname, fullname))
+        themacros.sort()
+        for asname, fullname in themacros:
+            self.write(f"{asname} from {fullname}\n")
+
     def interact(self, banner=None, exitmsg=None):
         """See `code.InteractiveConsole.interact`.
 
@@ -99,12 +112,16 @@ class MacroConsole(code.InteractiveConsole):
         """
         if banner is None:
             self.write("Use obj? to view obj's docstring, and obj?? to view its source code.\n")
+            self.write("Use macros? to see macros you have currently imported into the session.\n")
             self.write(f"MacroPy {macropy_version} -- Syntactic macros for Python.\n")
         return super().interact(banner, exitmsg)
 
     def runsource(self, source, filename="<input>", symbol="single"):
         # ? and ?? help syntax
-        if source.endswith("??"):
+        if source == "macros?":
+            self._list_macros()
+            return False  # complete input
+        elif source.endswith("??"):
             return self.runsource(f'imacropy.sourcecode({source[:-2]})')
         elif source.endswith("?"):
             return self.runsource(f"imacropy.doc({source[:-1]})")
