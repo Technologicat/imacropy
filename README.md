@@ -45,7 +45,7 @@ Currently **no startup banner is printed**, because extension loading occurs aft
 
 ## MacroConsole
 
-This is a derivative of ``code.InteractiveConsole``, allowing you to **embed a REPL that supports macros**. The difference to `macropy.core.console.MacroConsole` is that this one offers the same semantics as the IPython extension. We also offer the ``?`` and ``??`` syntax to view docstrings and source code.
+This is a derivative of, and drop-in replacement for, ``code.InteractiveConsole``, which allows you to **embed a REPL that supports macros**. The difference to `macropy.core.console.MacroConsole` is that this one offers the same semantics as the IPython extension. We also offer the ``?`` and ``??`` syntax to view docstrings and source code.
 
 ```python
 from imacropy.console import MacroConsole
