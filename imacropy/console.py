@@ -121,12 +121,19 @@ class MacroConsole(code.InteractiveConsole):
             # Must reload modules before detect_macros, because detect_macros reads the macro registry
             # of each module from which macros are imported.
             _reload_macro_modules(tree, '__main__')
-            # If detect_macros returns normally, it means each fullname can be imported successfully.
+            # If detect_macros returns normally, it means each fullname (module) can be imported successfully.
             bindings = detect_macros(tree, '__main__')
             if bindings:
                 self._stubs_dirty = True
-            for fullname, macro_bindings in bindings:
+            for fullname, macro_bindings in bindings:  # validate before committing
                 mod = importlib.import_module(fullname)  # already imported so just a sys.modules lookup
+                for origname, _ in macro_bindings:
+                    try:
+                        getattr(mod, origname)
+                    except AttributeError:
+                        raise ImportError(f"cannot import name '{origname}'")
+            for fullname, macro_bindings in bindings:
+                mod = importlib.import_module(fullname)
                 self._bindings[fullname] = (mod, macro_bindings)
 
             tree = ModuleExpansionContext(tree, source, self._bindings.values()).expand_macros()
@@ -140,6 +147,9 @@ class MacroConsole(code.InteractiveConsole):
             # In this case, the standard stack trace is long and points only to our code and the stdlib,
             # not the erroneous input that's the actual culprit. Better ignore it, and emulate showsyntaxerror.
             # TODO: support sys.excepthook.
+            self.write(f"{err.__class__.__name__}: {str(err)}\n")
+            return False  # erroneous input
+        except ImportError as err:  # during macro lookup in a successfully imported module
             self.write(f"{err.__class__.__name__}: {str(err)}\n")
             return False  # erroneous input
 
