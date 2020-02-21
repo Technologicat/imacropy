@@ -1,4 +1,4 @@
-**0.3.1** (in progress; updated 19 February 2020)
+**0.3.1** 21 February 2020
 
 - Fix bug when importing a nonexistent macro (typoed name) from a module that itself imports successfully.
   - Now the macro imports are validated before committing any changes.
