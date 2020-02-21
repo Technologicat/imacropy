@@ -32,6 +32,8 @@ The most recent definition of any given macro remains alive until the next macro
 
 Macro docstrings and source code can be viewed using ``?`` and ``??``, as usual.
 
+*Added in v0.3.1.* The line magic `%macros` now prints a human-readable list of macros that are currently imported into the REPL session (or says that no macros are imported, if so).
+
 ### Loading the extension
 
 To load the extension once, ``%load_ext imacropy.iconsole``.

@@ -2,11 +2,11 @@
 
 - Fix bug when importing a nonexistent macro (typoed name) from a module that itself imports successfully.
   - Now the macro imports are validated before committing any changes.
-- Add a `macros?` command to `MacroConsole`.
+- Add a `%macros` line magic to the IPython extension, and a `macros?` command to `MacroConsole`.
 
-  The literal command `macros?` now prints a human-readable list of macros that are currently imported into the REPL session (or says that no macros are imported, if so).
+  These both implement the same feature, in the two different consoles: print a human-readable list of macros that are currently imported into the REPL session (or say that no macros are imported, if so).
 
-  This shadows the `obj?` docstring lookup syntax for the MacroPy special object `macros`, but that's likely not needed. That can still be invoked manually, using `imacropy.doc(macros)`.
+  In `MacroConsole`, this shadows the `obj?` docstring lookup syntax for the MacroPy special object `macros`, but that's likely not needed. That can still be invoked manually, using `imacropy.doc(macros)`.
 
 ---
 

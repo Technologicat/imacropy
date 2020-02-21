@@ -13,6 +13,9 @@ To find your config file, ``ipython profile locate``.
 
 Notes:
 
+  - You can use the line magic `%macros` to print macros currently imported
+    to the session.
+
   - Each time a ``from mymodule import macros, ...`` is executed in the REPL,
     the system reloads ``mymodule``, to use the latest macro definitions.
 
@@ -44,7 +47,7 @@ from collections import OrderedDict
 from functools import partial
 
 from IPython.core.error import InputRejected
-from IPython.core.magic import register_cell_magic
+from IPython.core.magic import register_cell_magic, register_line_magic
 
 from macropy import __version__ as macropy_version
 from macropy.core.macros import ModuleExpansionContext, detect_macros
@@ -115,6 +118,22 @@ def ignore_nameerror(line, cell):  # ...when they are unloaded
         exec(cell, _instance.shell.user_ns)
     except NameError:
         pass
+
+@register_line_magic
+def macros(line):
+    """Print a human-readable list of macros currently imported into the session."""
+    t = _instance.macro_transformer
+    if not t.bindings:
+        print("<no macros imported>")
+        return
+    themacros = []
+    for fullname, (_, macro_bindings) in t.bindings.items():
+        for _, asname in macro_bindings:
+            themacros.append((asname, fullname))
+            themacros.sort()
+    for asname, fullname in themacros:
+        print(f"{asname} from {fullname}")
+
 
 class IMacroPyExtension:
     def __init__(self, shell):
