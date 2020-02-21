@@ -11,6 +11,8 @@ This differs from `macropy.core.console.MacroConsole` in that we follow
     ``obj?`` is shorthand for ``doc(obj)``, and ``obj??`` is shorthand
     for ``sourcecode(obj)``.
 
+  - You can use `macros?` to print macros currently imported to the session.
+
   - Each time a ``from mymodule import macros, ...`` is executed in the REPL,
     the system reloads ``mymodule``, to use the latest macro definitions.
 
