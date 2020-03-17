@@ -47,7 +47,20 @@ Currently **no startup banner is printed**, because extension loading occurs aft
 
 ## MacroConsole
 
-This is a derivative of, and drop-in replacement for, ``code.InteractiveConsole``, which allows you to **embed a REPL that supports macros**. The difference to `macropy.core.console.MacroConsole` is that this one offers the same semantics as the IPython extension. We also offer the ``?`` and ``??`` syntax to view docstrings and source code.
+This is a derivative of, and drop-in replacement for, ``code.InteractiveConsole``, which allows you to **embed a REPL that supports macros**. The difference to `macropy.core.console.MacroConsole` is that this one offers the same semantics as the IPython extension.
+
+Why `imacropy.console.MacroConsole`:
+
+ - IPython-like `obj?` and `obj??` syntax to view the docstring and source code of `obj`.
+ - Can list macros imported to the session, using the command `macros?`.
+ - Catches and reports import errors when importing macros.
+ - Allows importing the same macros again in the same session, to refresh their definitions.
+   - When you `from somemod import macros, ...`, this console automatically first reloads `somemod`, so that a macro import always sees the latest definitions.
+ - Makes viewing macro docstrings easy.
+   - When you import macros, beside loading them into the macro expander, the console automatically imports the macro stubs as regular runtime objects. They're functions, so just look at their `__doc__`.
+   - This also improves UX. Without loading the stubs, `from unpythonic.syntax import macros, let`, would not define the name `let` at runtime. Now it does, with the name pointing to the macro stub.
+
+Example:
 
 ```python
 from imacropy.console import MacroConsole
