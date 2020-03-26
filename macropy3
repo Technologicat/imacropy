@@ -29,7 +29,7 @@ try:  # this is all we need to enable dialect support.
 except ImportError:
     dialects = None
 
-__version__ = '1.6.0'
+__version__ = '1.7.0'
 
 def module_from_spec(spec):
     """Compatibility wrapper.
@@ -161,7 +161,7 @@ def import_module_as_main(name, script_mode):
 
 def main():
     """Handle command-line arguments and run the specified main program."""
-    parser = argparse.ArgumentParser(description="""Run a Python program with MacroPy3 and/or enabled.""",
+    parser = argparse.ArgumentParser(description="""Run a Python program or an interactive interpreter with MacroPy3 enabled.""",
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
 
     parser.add_argument('-v', '--version', action='version', version=('%(prog)s-bootstrapper ' + __version__))
@@ -169,9 +169,23 @@ def main():
                         help='script to run')
     parser.add_argument('-m', '--module', dest='module', default=None, type=str, metavar='mod',
                         help='run library module as a script (like python3 -m mod)')
+    parser.add_argument('-i', '--interactive', dest='interactive', action="store_true", default=False,
+                        help='interactive mode (macro-enabled Python interpreter). '
+                             'If -i is given, <filename> and -m <mod> are ignored.')
     parser.add_argument('-d', '--debug', dest='debug', action="store_true", default=False,
                         help='enable MacroPy logging (does nothing if MacroPy not installed)')
     opts = parser.parse_args()
+
+    if opts.debug and macropy:
+        import macropy.logging  # noqa: F401, this is imported for its side effects.
+
+    if opts.interactive:
+        import readline  # noqa: F401, side effects (enable GNU readline in input())
+        import rlcompleter  # noqa: F401, side effects
+        readline.parse_and_bind("tab: complete")  # PyPy ignores this, but not needed there.
+        from imacropy.console import MacroConsole
+        m = MacroConsole()
+        return m.interact()
 
     if not opts.filename and not opts.module:
         parser.print_help()
@@ -179,9 +193,6 @@ def main():
         raise ValueError("Please specify the program to run (either filename or -m module).")
     if opts.filename and opts.module:
         raise ValueError("Please specify just one program to run (either filename or -m module, not both).")
-
-    if opts.debug and macropy:
-        import macropy.logging
 
     # Import the module, pretending its name is "__main__".
     #
