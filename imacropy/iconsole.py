@@ -84,19 +84,23 @@ class MacroTransformer(ast.NodeTransformer):
     def visit(self, tree):
         try:
             _reload_macro_modules(tree, '__main__')
-            bindings = detect_macros(tree, '__main__')  # macro imports
-            if bindings:
-                self.ext.macro_bindings_changed = True
-                for fullname, macro_bindings in bindings:  # validate before committing
-                    mod = importlib.import_module(fullname)  # already imported so just a sys.modules lookup
-                    for origname, _ in macro_bindings:
-                        try:
-                            getattr(mod, origname)
-                        except AttributeError:
-                            raise ImportError(f"cannot import name '{origname}'")
-                for fullname, macro_bindings in bindings:
-                    mod = importlib.import_module(fullname)
-                    self.bindings[fullname] = (mod, macro_bindings)
+            try:
+                bindings = detect_macros(tree, '__main__')  # macro imports
+            except AttributeError:  # module 'foo' has no attribute 'macros'
+                pass
+            else:
+                if bindings:
+                    self.ext.macro_bindings_changed = True
+                    for fullname, macro_bindings in bindings:  # validate before committing
+                        mod = importlib.import_module(fullname)  # already imported so just a sys.modules lookup
+                        for origname, _ in macro_bindings:
+                            try:
+                                getattr(mod, origname)
+                            except AttributeError:
+                                raise ImportError(f"cannot import name '{origname}'")
+                    for fullname, macro_bindings in bindings:
+                        mod = importlib.import_module(fullname)
+                        self.bindings[fullname] = (mod, macro_bindings)
             newtree = ModuleExpansionContext(tree, self.ext.src, self.bindings.values()).expand_macros()
             self.ext.src = _placeholder
             return newtree

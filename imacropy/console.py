@@ -141,19 +141,23 @@ class MacroConsole(code.InteractiveConsole):
             # of each module from which macros are imported.
             _reload_macro_modules(tree, '__main__')
             # If detect_macros returns normally, it means each fullname (module) can be imported successfully.
-            bindings = detect_macros(tree, '__main__')
-            if bindings:
-                self._stubs_dirty = True
-            for fullname, macro_bindings in bindings:  # validate before committing
-                mod = importlib.import_module(fullname)  # already imported so just a sys.modules lookup
-                for origname, _ in macro_bindings:
-                    try:
-                        getattr(mod, origname)
-                    except AttributeError:
-                        raise ImportError(f"cannot import name '{origname}'")
-            for fullname, macro_bindings in bindings:
-                mod = importlib.import_module(fullname)
-                self._bindings[fullname] = (mod, macro_bindings)
+            try:
+                bindings = detect_macros(tree, '__main__')
+            except AttributeError:  # module 'foo' has no attribute 'macros'
+                pass
+            else:
+                if bindings:
+                    self._stubs_dirty = True
+                for fullname, macro_bindings in bindings:  # validate before committing
+                    mod = importlib.import_module(fullname)  # already imported so just a sys.modules lookup
+                    for origname, _ in macro_bindings:
+                        try:
+                            getattr(mod, origname)
+                        except AttributeError:
+                            raise ImportError(f"cannot import name '{origname}'")
+                for fullname, macro_bindings in bindings:
+                    mod = importlib.import_module(fullname)
+                    self._bindings[fullname] = (mod, macro_bindings)
 
             tree = ModuleExpansionContext(tree, source, self._bindings.values()).expand_macros()
 
