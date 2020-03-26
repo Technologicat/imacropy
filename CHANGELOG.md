@@ -1,3 +1,10 @@
+**0.3.2** (in progress)
+
+- Fix crash in `from somemod import macros, ...` when `somemod` has no `macros` attribute. (Typically this happens when trying to import macros from a module that doesn't define any.)
+- Bootstrapper: add interactive mode (`macropy3 -i`) to conveniently start a macro-enabled REPL.
+
+---
+
 **0.3.1** 21 February 2020
 
 - Fix bug when importing a nonexistent macro (typoed name) from a module that itself imports successfully.

@@ -96,6 +96,8 @@ Note that just like in IPython, for some reason `help(some_macro)` sees only the
 
 ## Bootstrapper
 
+*Added in v0.3.2: Interactive mode, `macropy3 -i`, to conveniently start `imacropy.console.MacroConsole` as an interactive Python interpreter. In interactive mode, the filename and module command-line arguments are ignored.*
+
 The bootstrapper imports the specified file or module, pretending its ``__name__`` is ``"__main__"``. **This allows your main program to use macros**.
 
 For example, ``some_program.py``:
