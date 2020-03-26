@@ -184,6 +184,8 @@ def main():
         import rlcompleter  # noqa: F401, side effects
         readline.parse_and_bind("tab: complete")  # PyPy ignores this, but not needed there.
         from imacropy.console import MacroConsole
+        import sys
+        sys.path.insert(0, '')  # Add CWD to import path like the builtin interactive console does.
         m = MacroConsole()
         return m.interact()
 
