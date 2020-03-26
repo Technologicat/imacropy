@@ -182,11 +182,13 @@ def main():
     if opts.interactive:
         import readline  # noqa: F401, side effects (enable GNU readline in input())
         import rlcompleter  # noqa: F401, side effects
+        repl_locals = {}
+        readline.set_completer(rlcompleter.Completer(namespace=repl_locals).complete)
         readline.parse_and_bind("tab: complete")  # PyPy ignores this, but not needed there.
         from imacropy.console import MacroConsole
         import sys
         sys.path.insert(0, '')  # Add CWD to import path like the builtin interactive console does.
-        m = MacroConsole()
+        m = MacroConsole(locals=repl_locals)
         return m.interact()
 
     if not opts.filename and not opts.module:
