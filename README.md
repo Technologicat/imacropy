@@ -96,9 +96,26 @@ Note that just like in IPython, for some reason `help(some_macro)` sees only the
 
 ## Bootstrapper
 
-*Added in v0.3.2: Interactive mode, `macropy3 -i`, to conveniently start `imacropy.console.MacroConsole` as an interactive Python interpreter. In interactive mode, the filename and module command-line arguments are ignored.*
+*Added in v0.3.2: Interactive mode.*
 
-The bootstrapper imports the specified file or module, pretending its ``__name__`` is ``"__main__"``. **This allows your main program to use macros**.
+The bootstrapper has two roles:
+
+ - It allows starting a **macro-enabled interactive Python interpreter** directly from the command line.
+ - It **allows your main program to use macros**.
+
+### Interactive mode
+
+Interactive mode (command-line option `-i`) starts a **macro-enabled interactive Python interpreter**, using `imacropy.console.MacroConsole`. The [readline](https://docs.python.org/3/library/readline.html) and [rlcompleter](https://docs.python.org/3/library/rlcompleter.html) modules are automatically activated and connected to the REPL session, so the command history and tab completion features work as expected, pretty much like in the standard interactive Python interpreter.
+
+The point of this feature is to conveniently allow starting a macro-enabled REPL directly from the command line. In interactive mode, the filename and module command-line arguments are ignored.
+
+If `-p` is given in addition to `-i`, as in `macropy3 -pi`, the REPL starts in **pylab mode**. This automatically performs `import numpy as np`, `import matplotlib.pyplot as plt`, and activates matplotlib's interactive mode, so plotting won't block the REPL. This is somewhat like IPython's pylab mode, but we keep stuff in separate namespaces. This is a convenience feature for scientific interactive use.
+
+**CAUTION**: As of v0.3.2, history is not saved between sessions. This may or may not change in a future release.
+
+### Bootstrapping a script or a module
+
+In this mode, the bootstrapper imports the specified file or module, pretending its ``__name__`` is ``"__main__"``. **This allows your main program to use macros**.
 
 For example, ``some_program.py``:
 
