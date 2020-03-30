@@ -193,8 +193,8 @@ def main():
 
     if not opts.filename and not opts.module:
         parser.print_help()
+        import sys
         sys.exit(0)
-        raise ValueError("Please specify the program to run (either filename or -m module).")
     if opts.filename and opts.module:
         raise ValueError("Please specify just one program to run (either filename or -m module, not both).")
 
