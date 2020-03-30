@@ -2,6 +2,7 @@
 
 - Fix crash in `from somemod import macros, ...` when `somemod` has no `macros` attribute. (Typically this happens when trying to import macros from a module that doesn't define any.)
 - Bootstrapper: add interactive mode (`macropy3 -i`) to conveniently start a macro-enabled REPL.
+- Bootstrapper: add pylab option (`-p`, `--pylab`, as in `macropy3 -pi` or `macropy3 --pylab --interactive`) to the interactive mode, to automatically `import numpy as np`, `import matplotlib.pyplot as plt`, and activate matplotlib's interactive mode, so plotting won't block the REPL. This is somewhat like IPython's pylab mode, but we keep stuff in separate namespaces. For convenience of scientific interactive use.
 
 ---
 
