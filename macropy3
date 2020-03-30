@@ -172,6 +172,10 @@ def main():
     parser.add_argument('-i', '--interactive', dest='interactive', action="store_true", default=False,
                         help='interactive mode (macro-enabled Python interpreter). '
                              'If -i is given, <filename> and -m <mod> are ignored.')
+    parser.add_argument('-p', '--pylab', dest='pylab', action="store_true", default=False,
+                        help='For use together with "-i". Automatically "import numpy as np", '
+                             '"import matplotlib.pyplot as plt", and enable mpl\'s interactive '
+                             'mode (somewhat like IPython\'s pylab mode).')
     parser.add_argument('-d', '--debug', dest='debug', action="store_true", default=False,
                         help='enable MacroPy logging (does nothing if MacroPy not installed)')
     opts = parser.parse_args()
@@ -183,6 +187,12 @@ def main():
         import readline  # noqa: F401, side effects (enable GNU readline in input())
         import rlcompleter  # noqa: F401, side effects
         repl_locals = {}
+        if opts.pylab:  # like IPython's pylab mode, but we keep things in separate namespaces.
+            import numpy
+            import matplotlib.pyplot
+            repl_locals["np"] = numpy
+            repl_locals["plt"] = matplotlib.pyplot
+            matplotlib.pyplot.ion()
         readline.set_completer(rlcompleter.Completer(namespace=repl_locals).complete)
         readline.parse_and_bind("tab: complete")  # PyPy ignores this, but not needed there.
         from imacropy.console import MacroConsole
