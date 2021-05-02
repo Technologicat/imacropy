@@ -1,5 +1,7 @@
 # Imacropy
 
+**NOTE** *April 2021: This project is **obsolete**. This technology now lives on in [`mcpyrate`](https://github.com/Technologicat/mcpyrate), and the example dialects can be found in [`unpythonic`](https://github.com/Technologicat/unpythonic).*
+
 Imacropy is interactive macropy.
 
 We provide some agile-development addons for MacroPy, namely:
